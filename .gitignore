@@ -1,0 +1,57 @@
+# Node / React
+node_modules/
+.npm/
+.pnpm-store/
+yarn.lock
+package-lock.json
+
+# Build outputs
+build/
+dist/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# Cache
+.cache/
+node_modules/.cache/
+.eslintcache
+.next/
+
+# Test / reports
+junit.xml
+reports/
+
+# Misc
+*.local
+*.tmp
+.tmp/
+.sass-cache/
+.cra-cache/
+
+# Storybook / Design
+storybook-static/
+
+# R3F / Three assets (if added)
+public/models/
+public/textures/
+public/hdr/
+
+# CRACO
+craco.local.js
