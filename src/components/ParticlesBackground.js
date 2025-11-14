@@ -59,59 +59,27 @@ const ParticlesBackground = () => {
           },
         },
         particles: {
-            number: { value: particleCount, density: { enable: true, area: 800 } },
-            color: { value: ['#ffffff', 'var(--grad2)'] },
-            links: { enable: true, color: 'var(--grad2)', opacity: 0.25, width: 1, distance: 140 },
-            move: { enable: true, speed: speed, outModes: { default: 'out' } },
-          color: {
-            value: ['#667eea', '#764ba2', '#f093fb'],
-          },
-          links: {
-            color: '#667eea',
-            distance: 150,
-            enable: true,
-            opacity: 0.1,
-            width: 1,
-          },
+          number: { value: particleCount, density: { enable: true, area: 800 } },
+          color: { value: ['#667eea', '#764ba2', '#f093fb'] },
+          links: { enable: true, color: '#667eea', opacity: 0.1, width: 1, distance: 150 },
           move: {
             direction: 'none',
             enable: true,
-            outModes: {
-              default: 'bounce',
-            },
+            outModes: { default: 'bounce' },
             random: false,
-            speed: 1,
+            speed: speed,
             straight: false,
-          },
-          number: {
-            density: {
-              enable: true,
-              area: 800,
-            },
-            value: particleCount,
           },
           opacity: {
             value: 0.3,
             random: true,
-            anim: {
-              enable: true,
-              speed: 1,
-              opacity_min: 0.1,
-              sync: false,
-            },
+            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false },
           },
-          shape: {
-            type: ['circle', 'triangle'],
-          },
+          shape: { type: ['circle', 'triangle'] },
           size: {
             value: { min: 1, max: 3 },
             random: true,
-            anim: {
-              enable: true,
-              speed: 2,
-              size_min: 0.1,
-              sync: false,
-            },
+            anim: { enable: true, speed: 2, size_min: 0.1, sync: false },
           },
         },
         detectRetina: true,

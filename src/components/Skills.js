@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FaReact, FaJava, FaNodeJs } from 'react-icons/fa';
 import { SiNextdotjs, SiJavascript, SiTypescript, SiScala, SiExpress, SiApachespark, SiApachehadoop, SiMongodb, SiPostgresql, SiSupabase, SiLinux, SiGit, SiVisualstudiocode } from 'react-icons/si';
