@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { FaReact, FaJava, FaNodeJs } from 'react-icons/fa';
 import { SiNextdotjs, SiJavascript, SiTypescript, SiScala, SiExpress, SiApachespark, SiApachehadoop, SiMongodb, SiPostgresql, SiSupabase, SiLinux, SiGit, SiVisualstudiocode } from 'react-icons/si';
 // Removed AnimatedBar in favor of icon-based badges
@@ -12,6 +12,8 @@ const Skills = () => {
   });
 
   const [activeCategory, setActiveCategory] = useState('programming');
+  const [query, setQuery] = useState('');
+  const shouldReduceMotion = useReducedMotion();
 
   // Load skills from data and normalize
   // Expected structure: { categoryKey: { title, skills: [{ name, level?, color? }] } }
@@ -45,26 +47,37 @@ const Skills = () => {
     // removed hardcoded fallback object
     
 
-  const categories = Object.keys(skillCategories);
+  const categories = useMemo(() => Object.keys(skillCategories), [skillCategories]);
+
+  const filteredSkills = useMemo(() => {
+    const list = skillCategories[activeCategory]?.skills || [];
+    const q = query.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((s) => String(s.name).toLowerCase().includes(q));
+  }, [activeCategory, query, skillCategories]);
+
+
+  const duration = shouldReduceMotion ? 0 : 0.6;
+  const offsetY = shouldReduceMotion ? 0 : 30;
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration,
         staggerChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: offsetY },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration,
         ease: 'easeOut',
       },
     },
@@ -103,23 +116,56 @@ const Skills = () => {
           </motion.div>
 
           {/* Category Tabs */}
-          <motion.div variants={itemVariants} className="mb-12">
-            <div className="flex flex-wrap justify-center gap-4">
-              {categories.map((category) => (
-                <motion.button
-                  key={category}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                    activeCategory === category
-                      ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg'
-                      : 'bg-secondary-800 text-secondary-300 hover:bg-secondary-700'
-                  }`}
-                >
-                  {skillCategories[category].title}
-                </motion.button>
-              ))}
+          <motion.div variants={itemVariants} className="mb-8">
+            <div className="flex flex-col items-center gap-4">
+              <div
+                role="tablist"
+                aria-label="Skill categories"
+                className="flex flex-wrap justify-center gap-2"
+              >
+                {categories.map((category, idx) => (
+                  <motion.button
+                    key={category}
+                    role="tab"
+                    aria-selected={activeCategory === category}
+                    tabIndex={activeCategory === category ? 0 : -1}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveCategory(category)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const next = (idx + 1) % categories.length;
+                        setActiveCategory(categories[next]);
+                      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prev = (idx - 1 + categories.length) % categories.length;
+                        setActiveCategory(categories[prev]);
+                      }
+                    }}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 ${
+                      activeCategory === category
+                        ? 'bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-lg'
+                        : 'bg-secondary-800 text-secondary-300 hover:bg-secondary-700'
+                    }`}
+                  >
+                    {skillCategories[category].title}
+                  </motion.button>
+                ))}
+              </div>
+
+              {/* Search/filter */}
+              <div className="w-full max-w-md">
+                <label htmlFor="skills-search" className="sr-only">Filter skills</label>
+                <input
+                  id="skills-search"
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search skills (e.g., React, SQL)"
+                  className="w-full rounded-lg bg-secondary-900 border border-secondary-700 text-secondary-100 placeholder-secondary-400 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                />
+              </div>
             </div>
           </motion.div>
 
@@ -128,7 +174,7 @@ const Skills = () => {
             // Removed mount/unmount animation to avoid jarring transitions on tab change
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {skillCategories[activeCategory].skills.map((skill, index) => (
+            {filteredSkills.map((skill, index) => (
               <motion.div
                 key={skill.name}
                 variants={itemVariants}
@@ -186,7 +232,7 @@ const Skills = () => {
       </div>
 
       {/* Background Elements */}
-      <div className=\"absolute inset-0 -z-10 opacity-30 light:opacity-15\">
+      <div className="absolute inset-0 -z-10 opacity-30" aria-hidden="true">
         <div className="absolute top-20 right-20 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl" />
         <div className="absolute bottom-20 left-20 w-64 h-64 bg-accent-500/20 rounded-full blur-3xl" />
       </div>
