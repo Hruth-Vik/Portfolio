@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "build"
+
+# Ensure no Next.js runtime is used for this CRA project
+[plugins]
+
+[build.environment]
+  NODE_VERSION = "18"
